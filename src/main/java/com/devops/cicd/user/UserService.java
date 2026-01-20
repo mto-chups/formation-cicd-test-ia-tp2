@@ -2,7 +2,7 @@ package com.devops.cicd.user;
 
 public class UserService {
 
-    public User register(String email, String password, Role role) {
-        return new User(email,password, role);
+    public User register(final String email, final String password, final Role role) {
+        return User.of(email, password, role);
     }
 }

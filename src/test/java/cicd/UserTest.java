@@ -24,7 +24,7 @@ class UserTest {
         @Test
         @DisplayName("Création User avec email valide + password fort + role non null -> OK")
         void shouldCreateUserWhenAllValid() {
-            User user = new User(VALID_EMAIL, STRONG_PWD, Role.USER);
+            User user = User.of(VALID_EMAIL, STRONG_PWD, Role.USER);
 
             assertNotNull(user);
             assertEquals(VALID_EMAIL, user.getEmail());
@@ -35,7 +35,7 @@ class UserTest {
         @Test
         @DisplayName("Normalisation: email trim() avant stockage; password inchangé; role inchangé")
         void shouldNormalizeEmailOnly() {
-            User user = new User("  alice@test.com  ", STRONG_PWD, Role.ADMIN);
+            User user = User.of("  alice@test.com  ", STRONG_PWD, Role.ADMIN);
 
             assertEquals("alice@test.com", user.getEmail(), "email must be trimmed before storage");
             assertEquals(STRONG_PWD, user.getPassword(), "password must not be modified");
@@ -45,14 +45,14 @@ class UserTest {
         @Test
         @DisplayName("Admin access: ADMIN -> true")
         void canAccessAdminArea_admin_true() {
-            User user = new User(VALID_EMAIL, STRONG_PWD, Role.ADMIN);
+            User user = User.of(VALID_EMAIL, STRONG_PWD, Role.ADMIN);
             assertTrue(user.canAccessAdminArea());
         }
 
         @Test
         @DisplayName("Admin access: USER -> false")
         void canAccessAdminArea_user_false() {
-            User user = new User(VALID_EMAIL, STRONG_PWD, Role.USER);
+            User user = User.of(VALID_EMAIL, STRONG_PWD, Role.USER);
             assertFalse(user.canAccessAdminArea());
         }
     }
@@ -64,28 +64,28 @@ class UserTest {
         @Test
         @DisplayName("Email avec espaces autour: \" alice@test.com \" -> stocké \"alice@test.com\"")
         void emailWithSpacesIsTrimmed() {
-            User user = new User(" alice@test.com ", STRONG_PWD, Role.USER);
+            User user = User.of(" alice@test.com ", STRONG_PWD, Role.USER);
             assertEquals("alice@test.com", user.getEmail());
         }
 
         @Test
         @DisplayName("Email minimalement valide: \"a@b.c\" -> OK")
         void minimalValidEmail_ok() {
-            User user = new User("a@b.c", STRONG_PWD, Role.USER);
+            User user = User.of("a@b.c", STRONG_PWD, Role.USER);
             assertEquals("a@b.c", user.getEmail());
         }
 
         @Test
         @DisplayName("Email avec plusieurs . après @ : \"a@b.c.d\" -> valide")
         void emailMultipleDotsAfterAt_ok() {
-            User user = new User("a@b.c.d", STRONG_PWD, Role.USER);
+            User user = User.of("a@b.c.d", STRONG_PWD, Role.USER);
             assertEquals("a@b.c.d", user.getEmail());
         }
 
         @Test
         @DisplayName("Password exactement conforme (len=8, maj/min/chiffre/special) -> OK")
         void passwordExactlyStrong_ok() {
-            User user = new User(VALID_EMAIL, "Abcd123!", Role.USER);
+            User user = User.of(VALID_EMAIL, "Abcd123!", Role.USER);
             assertEquals("Abcd123!", user.getPassword());
         }
 
@@ -95,7 +95,7 @@ class UserTest {
             String pwd = STRONG_PWD_WITH_SPACES;
 
             try {
-                User user = new User(VALID_EMAIL, pwd, Role.USER);
+                User user = User.of(VALID_EMAIL, pwd, Role.USER);
                 assertEquals(pwd, user.getPassword(), "password must not be trimmed/modified");
             } catch (IllegalArgumentException ex) {
                 assertEquals("password must be strong", ex.getMessage());
@@ -114,7 +114,7 @@ class UserTest {
             System.out.println("Testing email: [" + email + "]");
             IllegalArgumentException ex = assertThrows(
                     IllegalArgumentException.class,
-                    () -> new User(email, STRONG_PWD, Role.USER)
+                    () -> User.of(email, STRONG_PWD, Role.USER)
             );
             assertEquals("email must be valid", ex.getMessage());
         }
@@ -124,7 +124,7 @@ class UserTest {
         void emailNull_throw() {
             IllegalArgumentException ex = assertThrows(
                     IllegalArgumentException.class,
-                    () -> new User(null, STRONG_PWD, Role.USER)
+                    () -> User.of(null, STRONG_PWD, Role.USER)
             );
             assertEquals("email must be valid", ex.getMessage());
         }
@@ -139,7 +139,7 @@ class UserTest {
         void passwordNull_throw() {
             IllegalArgumentException ex = assertThrows(
                     IllegalArgumentException.class,
-                    () -> new User(VALID_EMAIL, null, Role.USER)
+                    () -> User.of(VALID_EMAIL, null, Role.USER)
             );
             assertEquals("password must be strong", ex.getMessage());
         }
@@ -149,7 +149,7 @@ class UserTest {
         void passwordBlank_throw(String password) {
             IllegalArgumentException ex = assertThrows(
                     IllegalArgumentException.class,
-                    () -> new User(VALID_EMAIL, password, Role.USER)
+                    () -> User.of(VALID_EMAIL, password, Role.USER)
             );
             assertEquals("password must be strong", ex.getMessage());
         }
@@ -161,7 +161,7 @@ class UserTest {
             String weak = "abcd1234";
             IllegalArgumentException ex = assertThrows(
                     IllegalArgumentException.class,
-                    () -> new User(VALID_EMAIL, weak, Role.USER)
+                    () -> User.of(VALID_EMAIL, weak, Role.USER)
             );
             assertEquals("password must be strong", ex.getMessage());
         }
@@ -176,7 +176,7 @@ class UserTest {
         void roleNull_throw() {
             IllegalArgumentException ex = assertThrows(
                     IllegalArgumentException.class,
-                    () -> new User(VALID_EMAIL, STRONG_PWD, null)
+                    () -> User.of(VALID_EMAIL, STRONG_PWD, null)
             );
             assertEquals("role must not be null", ex.getMessage());
         }
