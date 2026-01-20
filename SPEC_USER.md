@@ -86,7 +86,7 @@ La méthode existante suivante doit être utilisée :
 La classe `User` expose la méthode :
 
 ```java
-boolean canAccessAdminArea()
+boolean canAccessAdminArea
 ```
 
 Règle
@@ -111,7 +111,7 @@ Règle
 
 Une classe UserService doit exposer la méthode suivante :
 ```java
-User register(String email, String password, Role role)
+User register(String email, String password, Role role);
 ```
 
 Règles
@@ -137,5 +137,5 @@ Tests fonctionnels légers
 
 ## Note importante
 - Cette spécification est volontairement textuelle.
-- Votre objectif est de la transformer en comportements vérifiables via des tests,
+- Votreme objectif est de la transforr en comportements vérifiables via des tests,
 - avec l’aide éventuelle de l’IA, tout en gardant un esprit critique.

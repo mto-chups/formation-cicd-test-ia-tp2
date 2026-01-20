@@ -1,5 +1,7 @@
 package com.devops.cicd.user;
 
+import com.devops.cicd.PasswordPolicy;
+
 public class User {
 
     private final String email;
@@ -7,18 +9,37 @@ public class User {
     private final Role role;
 
     public User(String email, String password, Role role) {
-        // TODO: appliquer toutes les règles de validation de la spec
-        // - email: obligatoire, trim, format simple
-        // - password: obligatoire, strong (PasswordPolicy.isStrong)
-        // - role: obligatoire (non null)
-        //
-        // En cas d'erreur: IllegalArgumentException avec un message explicite
-        // ("email must be valid", "password must be strong", "role must not be null")
+        // ROLE: obligatoire
+        if (role == null) {
+            throw new IllegalArgumentException("role must not be null");
+        }
 
-        this.email = email;       // TODO: email doit être normalisé (trim)
-        this.password = password; // TODO: password ne doit pas être modifié
-        this.role = role;         // TODO: role non null
+        // EMAIL: obligatoire + trim avant stockage
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("email must be valid");
+        }
+        String normalizedEmail = email.trim();
+
+        if (!EmailValidator.isValid(normalizedEmail)) {
+            throw new IllegalArgumentException("email must be valid");
+        }
+
+        // PASSWORD: obligatoire (ne pas trim)
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("password must be strong");
+        }
+
+        // PASSWORD: doit être fort selon PasswordPolicy
+        if (!PasswordPolicy.isStrong(password)) {
+            throw new IllegalArgumentException("password must be strong");
+        }
+
+        // Stockage / normalisation
+        this.email = normalizedEmail; // trim uniquement ici
+        this.password = password;     // inchangé
+        this.role = role;             // tel quel
     }
+
 
     public String getEmail() {
         return email;
@@ -33,8 +54,7 @@ public class User {
     }
 
     public boolean canAccessAdminArea() {
-        // TODO: true uniquement si role == ADMIN
-        return false;
+        return this.role == Role.ADMIN;
     }
 
     // BONUS: vous pouvez ajouter equals/hashCode/toString si utile (non obligatoire)
