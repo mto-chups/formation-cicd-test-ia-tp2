@@ -16,7 +16,7 @@ public final class EmailValidator {
             throw new IllegalArgumentException("email must be valid");
         }
 
-        // au moins un '.' après le '@'
+        // au moins un '.' après le '@' !
         int dotAfterAt = email.indexOf('.', at + 1);
         if (dotAfterAt < 0) {
             throw new IllegalArgumentException("email must be valid");
