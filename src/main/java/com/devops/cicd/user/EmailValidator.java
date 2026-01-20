@@ -5,10 +5,14 @@ public final class EmailValidator {
     private EmailValidator() {}
 
     public static boolean isValid(String email) {
-        if (email == null) return false;
+        if (email == null) {
+            return false;
+        }
 
         String e = email.trim();
-        if (e.isEmpty()) return false;
+        if (e.isEmpty()) {
+            return false;
+        }
 
         // exactement un '@'
         int at = email.indexOf('@');
